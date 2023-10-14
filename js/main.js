@@ -2,6 +2,58 @@
 const mockDataArrayLength = 10;
 const avatarPictureFilesPath = 'img/avatar/';
 const avatarFileNameTemplate = 'user{{xx}}.png';
+const titles = [
+  'Классическая загородная вилла',
+  'Уютная квартира в самом серце города',
+  'Квартира - романтическое гнездышко для влюбленных',
+  'Прекрасные аппартаменты для отдыха друзей'
+];
+const locationLimits = {
+  latMin: 35.65,
+  latMax: 35.7,
+  logMin: 139.7,
+  logMax: 139.8,
+  precision: 5, //знаков после запятой
+};
+const priceLimits = {
+  minPrice: 1000,
+  maxPrice: 75000,
+  zeroesCount: 3,
+};
+const types = [
+  'palace',
+  'flat',
+  'house',
+  'bungalow',
+  'hotel'
+];
+const guestsPerRoomMax = 4;
+const inOutTimes = [
+  '12:00',
+  '13:00',
+  '14:00'
+];
+const features = [
+  'wifi',
+  'dishwasher',
+  'parking',
+  'washer',
+  'elevator',
+  'conditioner'
+];
+const descriptions = [
+  'Прекрасное место, шикарный вид из окон.',
+  'Тихо, уютно.',
+  'Всем-всем тут очень нравится.',
+  'Очень близко до магазинов, вокзала, полицейского участка.',
+  'Побывав тут единожды, определенно захотите вернуться сюда снова и снова.',
+];
+const photosLinks = [
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg'
+];
+
 
 const getRandomFromRange = (lowLimit = 0, highLimit = 1, simbolsAfterComma = 0, areOnlyPositive = true) => {
 
@@ -52,63 +104,72 @@ const createAvatarFiles = (count, nameTemplate) => {
   return Array.from({length: count}, (val, index) => `${nameParts[0]}${(++index).toString().padStart(countSymbols, '0')}${nameParts[1]}`);
 };
 
+const createLocation = ({latMin, latMax, logMin, logMax, precision}) => {
+  const location = {};
+  location.lat = getRandomFromRange(latMin, latMax, precision);
+  location.log = getRandomFromRange(logMin, logMax, precision);
+  return location;
+};
+
+
 const avatarFiles = createAvatarFiles(mockDataArrayLength, avatarFileNameTemplate);
 const getRandomAvatarFile = extractRandomElements(avatarFiles);
 
 const createMockDataAuthorObj = () => {
-  const mockDataAuthorObj = {};
-  mockDataAuthorObj.avatar = `${avatarPictureFilesPath}${getRandomAvatarFile()}`;
-  return mockDataAuthorObj;
+  const mockDataAuthor = {};
+  mockDataAuthor.avatar = `${avatarPictureFilesPath}${getRandomAvatarFile()}`;
+  return mockDataAuthor;
+};
+
+const normalizeStr = (str, digitCount) => {
+  str = str.toString();
+  const breakpoint = /\..*/;
+  const digitsAfterDot = str.match(breakpoint)[0].length - 1;
+  return str.padEnd(str.length + digitCount - digitsAfterDot, 0);
+};
+
+const createAdress = (obj) => `${normalizeStr((obj.lat), 5)}, ${normalizeStr((obj.log), 5)}`;
+
+const getRandomPrice = ({minPrice, maxPrice, zeroesCount}) => getRandomFromRange(minPrice / 10 ** zeroesCount, maxPrice / 10 ** zeroesCount) * 10 ** zeroesCount;
+
+const getCheckinTime = (checoutTime) => {
+  const checkoutTimeIndex = inOutTimes.indexOf(checoutTime);
+  return inOutTimes[getRandomFromRange(checkoutTimeIndex, inOutTimes.length - 1)];
+};
+
+const getSomeRandomElements = (arr) => {
+  const featuresLength = getRandomFromRange(0, arr.length);
+  const processedArr = Array.from(arr);
+  return Array.from({length: featuresLength}, extractRandomElements(processedArr));
+};
+
+const createMockDataOfferObj = () => {
+  const mockDataOffer = {};
+  mockDataOffer.title = getRandomElement(titles);
+  mockDataOffer.location = createLocation(locationLimits);
+  mockDataOffer.adress = createAdress(mockDataOffer.location);
+  mockDataOffer.price = getRandomPrice(priceLimits);
+  mockDataOffer.type = getRandomElement(types);
+  mockDataOffer.rooms = getRandomFromRange(1, 7);
+  mockDataOffer.guests = getRandomFromRange(mockDataOffer.rooms, mockDataOffer.rooms * guestsPerRoomMax);
+  mockDataOffer.checkout = inOutTimes[getRandomIndex(inOutTimes)];
+  mockDataOffer.checkin = getCheckinTime(mockDataOffer.checkout);
+  mockDataOffer.features = getSomeRandomElements(features);
+  mockDataOffer.description = getRandomElement(descriptions);
+  mockDataOffer.photos = getSomeRandomElements(photosLinks);
+  return mockDataOffer;
 };
 
 const createMockDataObj = () => {
   const mockDataObj = {};
   mockDataObj.author = createMockDataAuthorObj();
-  // fill mocrDataObj with offer obj;
+  // fill mockDataObj with offer obj;
+  mockDataObj.offer = createMockDataOfferObj();
   return mockDataObj;
-
-  /*    author, объект — описывает автора. Содержит одно поле:
-
-    avatar, строка — адрес изображения вида img/avatars/user{{xx}}.png, где {{xx}} — это число от 1 до 10. Перед однозначными числами ставится 0. Например, 01, 02...10. Адреса изображений не повторяются.
-
-    offer, объект — содержит информацию об объявлении. Состоит из полей:
-
-    title, строка — заголовок предложения. Придумайте самостоятельно.
-
-    address, строка — адрес предложения. Для простоты пусть пока составляется из географических координат по маске {{location.lat}}, {{location.lng}}.
-
-    price, число — стоимость. Случайное целое положительное число.
-
-    type, строка — одно из пяти фиксированных значений: palace, flat, house, bungalow или hotel.
-
-    rooms, число — количество комнат. Случайное целое положительное число.
-
-    guests, число — количество гостей, которое можно разместить. Случайное целое положительное число.
-
-    checkin, строка — одно из трёх фиксированных значений: 12:00, 13:00 или 14:00.
-
-    checkout, строка — одно из трёх фиксированных значений: 12:00, 13:00 или 14:00.
-
-    features, массив строк — массив случайной длины из значений: wifi, dishwasher, parking, washer, elevator, conditioner. Значения не должны повторяться.
-
-    description, строка — описание помещения. Придумайте самостоятельно.
-
-    photos, массив строк — массив случайной длины из значений: https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg, https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg, https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg.
-
-    location, объект — местоположение в виде географических координат. Состоит из двух полей:
-
-    lat, число с плавающей точкой — широта, случайное значение от 35.65000 до 35.70000.
-
-    lng, число с плавающей точкой — долгота, случайное значение от 139.70000 до 139.80000.
-    */
-
 };
 
 const createDataArray = (arrayLength) => Array.from({length: arrayLength}, createMockDataObj);
 
-const mockDataArray = createDataArray(mockDataArrayLength);
+createDataArray(mockDataArrayLength);
 
 generateSequenceArray();
-getRandomElement([1, 2]);
-
-console.log(mockDataArray);
