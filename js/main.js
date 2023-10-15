@@ -121,14 +121,7 @@ const createMockDataAuthorObj = () => {
   return mockDataAuthor;
 };
 
-const normalizeStr = (str, digitCount) => {
-  str = str.toString();
-  const breakpoint = /\..*/;
-  const digitsAfterDot = str.match(breakpoint)[0].length - 1;
-  return str.padEnd(str.length + digitCount - digitsAfterDot, 0);
-};
-
-const createAdress = (obj) => `${normalizeStr((obj.lat), 5)}, ${normalizeStr((obj.log), 5)}`;
+const createAdress = (obj) => `${(obj.lat).toFixed(locationLimits.precision)}, ${(obj.log).toFixed(locationLimits.precision)}`;
 
 const getRandomPrice = ({minPrice, maxPrice, zeroesCount}) => getRandomFromRange(minPrice / 10 ** zeroesCount, maxPrice / 10 ** zeroesCount) * 10 ** zeroesCount;
 
@@ -138,9 +131,9 @@ const getCheckinTime = (checoutTime) => {
 };
 
 const getSomeRandomElements = (arr) => {
-  const featuresLength = getRandomFromRange(0, arr.length);
+  const someElementsArrLength = getRandomFromRange(0, arr.length);
   const processedArr = Array.from(arr);
-  return Array.from({length: featuresLength}, extractRandomElements(processedArr));
+  return Array.from({length: someElementsArrLength}, extractRandomElements(processedArr));
 };
 
 const createMockDataOfferObj = () => {
@@ -163,13 +156,12 @@ const createMockDataOfferObj = () => {
 const createMockDataObj = () => {
   const mockDataObj = {};
   mockDataObj.author = createMockDataAuthorObj();
-  // fill mockDataObj with offer obj;
   mockDataObj.offer = createMockDataOfferObj();
   return mockDataObj;
 };
 
 const createDataArray = (arrayLength) => Array.from({length: arrayLength}, createMockDataObj);
 
-createDataArray(mockDataArrayLength);
+console.log(createDataArray(mockDataArrayLength));
 
 generateSequenceArray();
