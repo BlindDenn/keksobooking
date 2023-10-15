@@ -54,27 +54,34 @@ const photosLinks = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg'
 ];
 
+const getRandomFromRange = (lowLimit = 0, highLimit = 1, symbolsAfterComma = 0, areOnlyPositive = true) => {
 
-const getRandomFromRange = (lowLimit = 0, highLimit = 1, simbolsAfterComma = 0, areOnlyPositive = true) => {
-
-  let result = null;
-  const commaCoef = 10 ** simbolsAfterComma;
+  const getRandomIntegerFromRange = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+  const getRandomFloatFromRange = (min, max, digit) => +(Math.random() * (max - min) + min).toFixed(digit);
   const validateInput = (validatedData) => validatedData < 0 ? 0 : validatedData;
+
+  let result;
 
   if (areOnlyPositive) {
     lowLimit = validateInput(lowLimit);
     highLimit = validateInput(highLimit);
   }
 
-  const min = Math.ceil(Math.min(lowLimit, highLimit) * commaCoef);
-  const max = Math.floor(Math.max(lowLimit, highLimit) * commaCoef);
-
-  if (min <= max) {
-    result = Math.floor(Math.random() * (max - min + 1) + min) / commaCoef;
+  if (!symbolsAfterComma) {
+    const min = Math.ceil(Math.min(lowLimit, highLimit));
+    const max = Math.floor(Math.max(lowLimit, highLimit));
+    if (min > max) {
+      result = null;
+    } else {
+      result = getRandomIntegerFromRange(min, max);
+    }
   }
-  // else {
-  //   throw new Error(`В диапазоне от ${lowLimit} до ${highLimit} нет ни одного числа, соответствующего заданному критерию — количество знаков после запятой: ${simbolsAfterComma}.`);
-  // }
+
+  if (symbolsAfterComma) {
+    const min = Math.min(lowLimit, highLimit);
+    const max = Math.max(lowLimit, highLimit);
+    result = getRandomFloatFromRange (min, max, symbolsAfterComma);
+  }
 
   return result;
 };
@@ -136,6 +143,8 @@ const getSomeRandomElements = (arr) => {
   return Array.from({length: someElementsArrLength}, extractRandomElements(processedArr));
 };
 
+const filterSomeElements = (arr) => arr.filter(() => Math.random() > 0.5);
+
 const createMockDataOfferObj = () => {
   const mockDataOffer = {};
   mockDataOffer.title = getRandomElement(titles);
@@ -147,7 +156,7 @@ const createMockDataOfferObj = () => {
   mockDataOffer.guests = getRandomFromRange(mockDataOffer.rooms, mockDataOffer.rooms * guestsPerRoomMax);
   mockDataOffer.checkout = inOutTimes[getRandomIndex(inOutTimes)];
   mockDataOffer.checkin = getCheckinTime(mockDataOffer.checkout);
-  mockDataOffer.features = getSomeRandomElements(features);
+  mockDataOffer.features = filterSomeElements(features);
   mockDataOffer.description = getRandomElement(descriptions);
   mockDataOffer.photos = getSomeRandomElements(photosLinks);
   return mockDataOffer;
