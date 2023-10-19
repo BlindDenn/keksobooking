@@ -2,7 +2,7 @@
 const mockDataArrayLength = 10;
 const avatarPictureFilesPath = 'img/avatar/';
 const avatarFileNameTemplate = 'user{{xx}}.png';
-const titles = [
+const TITLES = [
   'Классическая загородная вилла',
   'Уютная квартира в самом серце города',
   'Квартира - романтическое гнездышко для влюбленных',
@@ -142,19 +142,31 @@ const getSomeRandomElements = (arr) => {
 const filterSomeElements = (arr) => arr.filter(() => Math.random() > 0.5);
 
 const createMockDataOfferObj = () => {
-  const mockDataOffer = {};
-  mockDataOffer.title = getRandomElement(titles);
-  mockDataOffer.location = createLocation(locationLimits);
-  mockDataOffer.adress = createAdress(mockDataOffer.location);
-  mockDataOffer.price = getRandomPrice(priceLimits);
-  mockDataOffer.type = getRandomElement(types);
-  mockDataOffer.rooms = getRandomFromRange(1, 7);
-  mockDataOffer.guests = getRandomFromRange(mockDataOffer.rooms, mockDataOffer.rooms * guestsPerRoomMax);
-  mockDataOffer.checkout = inOutTimes[getRandomIndex(inOutTimes)];
-  mockDataOffer.checkin = getCheckinTime(mockDataOffer.checkout);
-  mockDataOffer.features = filterSomeElements(features);
-  mockDataOffer.description = getRandomElement(descriptions);
-  mockDataOffer.photos = getSomeRandomElements(photosLinks);
+  const mockDataOffer = {
+    title: getRandomElement(TITLES),
+    location: createLocation(locationLimits),
+    price: getRandomPrice(priceLimits),
+    type: getRandomElement(types),
+    rooms: getRandomFromRange(1, 7),
+    checkout: getRandomElement(inOutTimes),
+    features: filterSomeElements(features),
+    description: getRandomElement(descriptions),
+    photos: getSomeRandomElements(photosLinks),
+    setAdress() {
+      this.adress = createAdress(this.location);
+    },
+    setGuests() {
+      this.guests = getRandomFromRange(this.rooms, this.rooms * guestsPerRoomMax);
+    },
+    setCheckin() {
+      this.checkin = getCheckinTime(this.checkout);
+    },
+  };
+
+  mockDataOffer.setAdress();
+  mockDataOffer.setGuests();
+  mockDataOffer.setCheckin();
+
   return mockDataOffer;
 };
 
