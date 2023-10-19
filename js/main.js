@@ -111,22 +111,18 @@ const createAvatarFiles = (count, nameTemplate) => {
   return Array.from({length: count}, (val, index) => `${nameParts[0]}${(++index).toString().padStart(countSymbols, '0')}${nameParts[1]}`);
 };
 
-const createLocation = ({latMin, latMax, logMin, logMax, precision}) => {
-  const location = {};
-  location.lat = getRandomFromRange(latMin, latMax, precision);
-  location.log = getRandomFromRange(logMin, logMax, precision);
-  return location;
-};
-
+const createLocation = ({latMin, latMax, logMin, logMax, precision}) => ({
+  lat: getRandomFromRange(latMin, latMax, precision),
+  log: getRandomFromRange(logMin, logMax, precision),
+});
 
 const avatarFiles = createAvatarFiles(mockDataArrayLength, avatarFileNameTemplate);
+
 const getRandomAvatarFile = extractRandomElements(avatarFiles);
 
-const createMockDataAuthorObj = () => {
-  const mockDataAuthor = {};
-  mockDataAuthor.avatar = `${avatarPictureFilesPath}${getRandomAvatarFile()}`;
-  return mockDataAuthor;
-};
+const createMockDataAuthorObj = () => ({
+  avatar: `${avatarPictureFilesPath}${getRandomAvatarFile()}`
+});
 
 const createAdress = (obj) => `${(obj.lat).toFixed(locationLimits.precision)}, ${(obj.log).toFixed(locationLimits.precision)}`;
 
@@ -162,12 +158,10 @@ const createMockDataOfferObj = () => {
   return mockDataOffer;
 };
 
-const createMockDataObj = () => {
-  const mockDataObj = {};
-  mockDataObj.author = createMockDataAuthorObj();
-  mockDataObj.offer = createMockDataOfferObj();
-  return mockDataObj;
-};
+const createMockDataObj = () => ({
+  author: createMockDataAuthorObj(),
+  offer: createMockDataOfferObj(),
+});
 
 const createDataArray = (arrayLength) => Array.from({length: arrayLength}, createMockDataObj);
 
