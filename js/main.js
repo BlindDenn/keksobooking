@@ -1,39 +1,40 @@
 
-const mockDataArrayLength = 10;
-const avatarPictureFilesPath = 'img/avatar/';
-const avatarFileNameTemplate = 'user{{xx}}.png';
+const MOCK_DATA_ARRAY_LENGTH = 10;
+const AVATAR_PICTURE_FILES_PATH = 'img/avatar/';
+const AVATAR_FILE_NAME_TEMPLATE = 'user{{xx}}.png';
 const TITLES = [
   'Классическая загородная вилла',
   'Уютная квартира в самом серце города',
   'Квартира - романтическое гнездышко для влюбленных',
   'Прекрасные аппартаменты для отдыха друзей'
 ];
-const locationLimits = {
+const LOCATION_LIMITS = {
   latMin: 35.65,
   latMax: 35.7,
   logMin: 139.7,
   logMax: 139.8,
   precision: 5, //знаков после запятой
 };
-const priceLimits = {
+const PRICE_LIMITS = {
   minPrice: 1000,
   maxPrice: 75000,
   zeroesCount: 3,
 };
-const types = [
+const TYPES = [
   'palace',
   'flat',
   'house',
   'bungalow',
   'hotel'
 ];
-const guestsPerRoomMax = 4;
-const inOutTimes = [
+const ROOM_MAX_AMOUNT = 7;
+const GUESTS_PER_ROOM_MAX = 4;
+const IN_OUT_TIMES = [
   '12:00',
   '13:00',
   '14:00'
 ];
-const features = [
+const FEATURES = [
   'wifi',
   'dishwasher',
   'parking',
@@ -41,14 +42,14 @@ const features = [
   'elevator',
   'conditioner'
 ];
-const descriptions = [
+const DESCRIPTIONS = [
   'Прекрасное место, шикарный вид из окон.',
   'Тихо, уютно.',
   'Всем-всем тут очень нравится.',
   'Очень близко до магазинов, вокзала, полицейского участка.',
   'Побывав тут единожды, определенно захотите вернуться сюда снова и снова.',
 ];
-const photosLinks = [
+const PHOTOS_LINKS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg'
@@ -116,21 +117,21 @@ const createLocation = ({latMin, latMax, logMin, logMax, precision}) => ({
   log: getRandomFromRange(logMin, logMax, precision),
 });
 
-const avatarFiles = createAvatarFiles(mockDataArrayLength, avatarFileNameTemplate);
+const avatarFiles = createAvatarFiles(MOCK_DATA_ARRAY_LENGTH, AVATAR_FILE_NAME_TEMPLATE);
 
 const getRandomAvatarFile = extractRandomElements(avatarFiles);
 
 const createMockDataAuthorObj = () => ({
-  avatar: `${avatarPictureFilesPath}${getRandomAvatarFile()}`
+  avatar: `${AVATAR_PICTURE_FILES_PATH}${getRandomAvatarFile()}`
 });
 
-const createAdress = (obj) => `${(obj.lat).toFixed(locationLimits.precision)}, ${(obj.log).toFixed(locationLimits.precision)}`;
+const createAdress = (obj) => `${(obj.lat).toFixed(LOCATION_LIMITS.precision)}, ${(obj.log).toFixed(LOCATION_LIMITS.precision)}`;
 
 const getRandomPrice = ({minPrice, maxPrice, zeroesCount}) => getRandomFromRange(minPrice / 10 ** zeroesCount, maxPrice / 10 ** zeroesCount) * 10 ** zeroesCount;
 
 const getCheckinTime = (checoutTime) => {
-  const checkoutTimeIndex = inOutTimes.indexOf(checoutTime);
-  return inOutTimes[getRandomFromRange(checkoutTimeIndex, inOutTimes.length - 1)];
+  const checkoutTimeIndex = IN_OUT_TIMES.indexOf(checoutTime);
+  return IN_OUT_TIMES[getRandomFromRange(checkoutTimeIndex, IN_OUT_TIMES.length - 1)];
 };
 
 const getSomeRandomElements = (arr) => {
@@ -144,19 +145,19 @@ const filterSomeElements = (arr) => arr.filter(() => Math.random() > 0.5);
 const createMockDataOfferObj = () => {
   const mockDataOffer = {
     title: getRandomElement(TITLES),
-    location: createLocation(locationLimits),
-    price: getRandomPrice(priceLimits),
-    type: getRandomElement(types),
-    rooms: getRandomFromRange(1, 7),
-    checkout: getRandomElement(inOutTimes),
-    features: filterSomeElements(features),
-    description: getRandomElement(descriptions),
-    photos: getSomeRandomElements(photosLinks),
+    location: createLocation(LOCATION_LIMITS),
+    price: getRandomPrice(PRICE_LIMITS),
+    type: getRandomElement(TYPES),
+    rooms: getRandomFromRange(1, ROOM_MAX_AMOUNT),
+    checkout: getRandomElement(IN_OUT_TIMES),
+    FEATURES: filterSomeElements(FEATURES),
+    description: getRandomElement(DESCRIPTIONS),
+    photos: getSomeRandomElements(PHOTOS_LINKS),
     setAdress() {
       this.adress = createAdress(this.location);
     },
     setGuests() {
-      this.guests = getRandomFromRange(this.rooms, this.rooms * guestsPerRoomMax);
+      this.guests = getRandomFromRange(this.rooms, this.rooms * GUESTS_PER_ROOM_MAX);
     },
     setCheckin() {
       this.checkin = getCheckinTime(this.checkout);
@@ -164,8 +165,11 @@ const createMockDataOfferObj = () => {
   };
 
   mockDataOffer.setAdress();
+  delete mockDataOffer.setAdress;
   mockDataOffer.setGuests();
+  delete mockDataOffer.setGuests;
   mockDataOffer.setCheckin();
+  delete mockDataOffer.setCheckin;
 
   return mockDataOffer;
 };
@@ -177,6 +181,6 @@ const createMockDataObj = () => ({
 
 const createDataArray = (arrayLength) => Array.from({length: arrayLength}, createMockDataObj);
 
-console.log(createDataArray(mockDataArrayLength));
+console.log(createDataArray(MOCK_DATA_ARRAY_LENGTH));
 
 generateSequenceArray();
