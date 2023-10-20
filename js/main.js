@@ -142,6 +142,15 @@ const getSomeRandomElements = (arr) => {
 
 const filterSomeElements = (arr) => arr.filter(() => Math.random() > 0.5);
 
+const runAndCleanAllMethodsOnce = (obj) => {
+  for (const prop in obj) {
+    if (typeof(obj[prop]) === 'function') {
+      obj[prop]();
+      delete obj[prop];
+    }
+  }
+};
+
 const createMockDataOfferObj = () => {
   const mockDataOffer = {
     title: getRandomElement(TITLES),
@@ -150,7 +159,7 @@ const createMockDataOfferObj = () => {
     type: getRandomElement(TYPES),
     rooms: getRandomFromRange(1, ROOM_MAX_AMOUNT),
     checkout: getRandomElement(IN_OUT_TIMES),
-    FEATURES: filterSomeElements(FEATURES),
+    features: filterSomeElements(FEATURES),
     description: getRandomElement(DESCRIPTIONS),
     photos: getSomeRandomElements(PHOTOS_LINKS),
     setAdress() {
@@ -164,12 +173,7 @@ const createMockDataOfferObj = () => {
     },
   };
 
-  mockDataOffer.setAdress();
-  delete mockDataOffer.setAdress;
-  mockDataOffer.setGuests();
-  delete mockDataOffer.setGuests;
-  mockDataOffer.setCheckin();
-  delete mockDataOffer.setCheckin;
+  runAndCleanAllMethodsOnce(mockDataOffer);
 
   return mockDataOffer;
 };
