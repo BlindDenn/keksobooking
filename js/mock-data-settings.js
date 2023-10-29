@@ -11,6 +11,7 @@ const
     'Уютная квартира в самом серце города',
     'Квартира - романтическое гнездышко для влюбленных',
     'Прекрасные аппартаменты для отдыха друзей',
+    'Уютное гнездышко для молодоженов'
   ],
   LOCATION_LIMITS = {
     latMin: 35.65,
@@ -52,13 +53,14 @@ const
     'Всем-всем тут очень нравится.',
     'Очень близко до магазинов, вокзала, полицейского участка.',
     'Побывав тут единожды, определенно захотите вернуться сюда снова и снова.',
+    'Великолепная квартира-студия в центре Токио. Подходит как туристам, так и бизнесменам. Квартира полностью укомплектована и недавно отремонтирована.'
   ],
   PHOTOS = {
     filesPath: 'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/',
     filesNames: [
       'duonguyen-8LrGtIxxa4w.jpg',
       'brandon-hoogenboom-SNxQGWxZQi0.jpg',
-      'claire-rendall-b6kAwr1i0Iw.jpg'
+      'claire-rendall-b6kAwr1i0Iw.jpg',
     ],
   };
 
@@ -70,13 +72,13 @@ const mockDataArraySettings = {
   priceLimits: PRICE_LIMITS,
   types: TYPES,
   roomMaxAmount: ROOM_MAX_AMOUNT,
-  guests: GUESTS_PER_ROOM_MAX,
+  guestsPerRoomMax: GUESTS_PER_ROOM_MAX,
   inOutTimes: IN_OUT_TIMES,
   features: FEATURES,
   descriptions: DESCRIPTIONS,
   photos: PHOTOS,
 };
 
-const getMockDataArraySetting = () => mockDataArraySettings;
+const getMockDataArraySettings = () => mockDataArraySettings;
 
-export{ getMockDataArraySetting };
+export{ getMockDataArraySettings };

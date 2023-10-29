@@ -1,4 +1,4 @@
-import{ getMockDataArraySetting } from './mock-data-settings.js';
+import{ getMockDataArraySettings } from './mock-data-settings.js';
 import{
   getRandomFromRange,
   getRandomElement,
@@ -7,42 +7,42 @@ import{
   filterSomeElements
 } from './utils.js';
 
-const settingsObj = getMockDataArraySetting();
+const settings = getMockDataArraySettings();
 
-const createAvatarFiles = (count, nameTemplate) => {
+const createAvatarFiles = ({arrayLength, avatarPictures: {fileNameTemplate: template}}) => {
   const breakpoint = /{{.*}}/;
-  const nameParts = nameTemplate.split(breakpoint);
-  const countSymbols = nameTemplate.match(breakpoint)[0].length - 4;
-  return Array.from({length: count}, (val, index) => `${nameParts[0]}${(++index).toString().padStart(countSymbols, '0')}${nameParts[1]}`);
+  const nameParts = template.split(breakpoint);
+  const countSymbols = template.match(breakpoint)[0].length - 4;
+  return Array.from({length: arrayLength}, (val, index) => `${nameParts[0]}${(++index).toString().padStart(countSymbols, '0')}${nameParts[1]}`);
 };
 
-const avatarFiles = createAvatarFiles(settingsObj.arrayLength, settingsObj.avatarPictures.fileNameTemplate);
+const avatarFiles = createAvatarFiles(settings);
 
-const createLocation = ({latMin, latMax, logMin, logMax, precision}) => ({
+const createLocation = ({locationLimits: {latMin, latMax, logMin, logMax, precision}}) => ({
   lat: getRandomFromRange(latMin, latMax, precision),
   log: getRandomFromRange(logMin, logMax, precision),
 });
 
 const getRandomAvatarFile = extractRandomElements(avatarFiles);
 
-const createMockDataAuthorObj = () => ({
-  avatar: `${settingsObj.avatarPictures.filesPath}${getRandomAvatarFile()}`
+const createMockDataAuthorObj = ({avatarPictures: {filesPath}}) => ({
+  avatar: `${filesPath}${getRandomAvatarFile()}`
 });
 
-const createAdress = (obj) => `${(obj.lat).toFixed(settingsObj.locationLimits.precision)}, ${(obj.log).toFixed(settingsObj.locationLimits.precision)}`;
+const createAdress = (obj, {locationLimits: {precision}}) => `${(obj.lat).toFixed(precision)}, ${(obj.log).toFixed(precision)}`;
 
-const getRandomPrice = ({minPrice, maxPrice, zeroesCount}) => getRandomFromRange(minPrice / 10 ** zeroesCount, maxPrice / 10 ** zeroesCount) * 10 ** zeroesCount;
+const getRandomPrice = ({priceLimits: {minPrice, maxPrice, zeroesCount}}) => getRandomFromRange(minPrice / 10 ** zeroesCount, maxPrice / 10 ** zeroesCount) * 10 ** zeroesCount;
 
-const getCheckinTime = (checoutTime) => {
-  const checkoutTimeIndex = settingsObj.inOutTimes.indexOf(checoutTime);
-  return settingsObj.inOutTimes[getRandomFromRange(checkoutTimeIndex, settingsObj.inOutTimes.length - 1)];
+const getCheckinTime = (checoutTime, {inOutTimes}) => {
+  const checkoutTimeIndex = inOutTimes.indexOf(checoutTime);
+  return inOutTimes[getRandomFromRange(checkoutTimeIndex, inOutTimes.length - 1)];
 };
 
-const createPhotoLink = (index) => `${settingsObj.photos.filesPath}${settingsObj.photos.filesNames[index]}`;
+const createPhotoLink = (index, {photos: {filesPath, filesNames}}) => `${filesPath}${filesNames[index]}`;
 
-const createPhotosArr = () => Array.from({length: settingsObj.photos.filesNames.length}, (val, index) => createPhotoLink(index));
+const createPhotosArr = ({photos: {filesNames}}) => Array.from({length: filesNames.length}, (val, index) => createPhotoLink(index, settings));
 
-const photos = createPhotosArr();
+const photos = createPhotosArr(settings);
 
 const runAndCleanAllMethodsOnce = (obj) => {
   for (const prop in obj) {
@@ -53,25 +53,25 @@ const runAndCleanAllMethodsOnce = (obj) => {
   }
 };
 
-const createMockDataOfferObj = () => {
+const createMockDataOfferObj = ({titles, types, roomMaxAmount, inOutTimes, features, descriptions, guestsPerRoomMax}) => {
   const mockDataOffer = {
-    title: getRandomElement(settingsObj.titles),
-    location: createLocation(settingsObj.locationLimits),
-    price: getRandomPrice(settingsObj.priceLimits),
-    type: getRandomElement(settingsObj.types),
-    rooms: getRandomFromRange(1, settingsObj.roomMaxAmount),
-    checkout: getRandomElement(settingsObj.inOutTimes),
-    features: filterSomeElements(settingsObj.features),
-    description: getRandomElement(settingsObj.descriptions),
+    title: getRandomElement(titles),
+    location: createLocation(settings),
+    price: getRandomPrice(settings),
+    type: getRandomElement(types),
+    rooms: getRandomFromRange(1, roomMaxAmount),
+    checkout: getRandomElement(inOutTimes),
+    features: filterSomeElements(features),
+    description: getRandomElement(descriptions),
     photos: getSomeRandomElements(photos),
     setAdress() {
-      this.adress = createAdress(this.location);
+      this.adress = createAdress(this.location, settings);
     },
     setGuests() {
-      this.guests = getRandomFromRange(this.rooms, this.rooms * settingsObj.guestsPerRoomMax);
+      this.guests = getRandomFromRange(this.rooms, this.rooms * guestsPerRoomMax);
     },
     setCheckin() {
-      this.checkin = getCheckinTime(this.checkout);
+      this.checkin = getCheckinTime(this.checkout, settings);
     },
   };
 
@@ -81,14 +81,12 @@ const createMockDataOfferObj = () => {
 };
 
 const createMockDataObj = () => ({
-  author: createMockDataAuthorObj(),
-  offer: createMockDataOfferObj(),
+  author: createMockDataAuthorObj(settings),
+  offer: createMockDataOfferObj(settings),
 });
 
-const createDataArray = (arrayLength) => Array.from({length: arrayLength}, createMockDataObj);
+const createDataArray = ({arrayLength}) => Array.from({length: arrayLength}, createMockDataObj);
 
-const getDataArray = () => createDataArray(settingsObj.arrayLength);
+const getDataArray = () => createDataArray(settings);
 
 export{ getDataArray };
-
-
