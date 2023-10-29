@@ -1,5 +1,5 @@
 import{ getDataArray } from './mock-data.js';
 
-getDataArray();
+// getDataArray();
 
-// console.log(getDataArray());
+console.log(getDataArray());

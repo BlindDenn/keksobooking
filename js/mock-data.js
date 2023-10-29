@@ -3,7 +3,8 @@ import{
   getRandomFromRange,
   getRandomElement,
   extractRandomElements,
-  getSomeRandomElements
+  getSomeRandomElements,
+  filterSomeElements
 } from './utils.js';
 
 const settingsObj = getMockDataArraySetting();
@@ -15,17 +16,17 @@ const createAvatarFiles = (count, nameTemplate) => {
   return Array.from({length: count}, (val, index) => `${nameParts[0]}${(++index).toString().padStart(countSymbols, '0')}${nameParts[1]}`);
 };
 
+const avatarFiles = createAvatarFiles(settingsObj.arrayLength, settingsObj.avatarPictures.fileNameTemplate);
+
 const createLocation = ({latMin, latMax, logMin, logMax, precision}) => ({
   lat: getRandomFromRange(latMin, latMax, precision),
   log: getRandomFromRange(logMin, logMax, precision),
 });
 
-const avatarFiles = createAvatarFiles(settingsObj.arrayLength, settingsObj.avatarFileNameTemplate);
-
 const getRandomAvatarFile = extractRandomElements(avatarFiles);
 
 const createMockDataAuthorObj = () => ({
-  avatar: `${settingsObj.avatarPictureFilesPath}${getRandomAvatarFile()}`
+  avatar: `${settingsObj.avatarPictures.filesPath}${getRandomAvatarFile()}`
 });
 
 const createAdress = (obj) => `${(obj.lat).toFixed(settingsObj.locationLimits.precision)}, ${(obj.log).toFixed(settingsObj.locationLimits.precision)}`;
@@ -37,7 +38,11 @@ const getCheckinTime = (checoutTime) => {
   return settingsObj.inOutTimes[getRandomFromRange(checkoutTimeIndex, settingsObj.inOutTimes.length - 1)];
 };
 
-const filterSomeElements = (arr) => arr.filter(() => Math.random() > 0.5);
+const createPhotoLink = (index) => `${settingsObj.photos.filesPath}${settingsObj.photos.filesNames[index]}`;
+
+const createPhotosArr = () => Array.from({length: settingsObj.photos.filesNames.length}, (val, index) => createPhotoLink(index));
+
+const photos = createPhotosArr();
 
 const runAndCleanAllMethodsOnce = (obj) => {
   for (const prop in obj) {
@@ -58,7 +63,7 @@ const createMockDataOfferObj = () => {
     checkout: getRandomElement(settingsObj.inOutTimes),
     features: filterSomeElements(settingsObj.features),
     description: getRandomElement(settingsObj.descriptions),
-    photos: getSomeRandomElements(settingsObj.photosLinks),
+    photos: getSomeRandomElements(photos),
     setAdress() {
       this.adress = createAdress(this.location);
     },

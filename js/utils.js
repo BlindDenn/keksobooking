@@ -52,6 +52,8 @@ const getSomeRandomElements = (arr) => {
   return Array.from({length: someElementsArrLength}, extractRandomElements(processedArr));
 };
 
+const filterSomeElements = (arr) => arr.filter(() => Math.random() > 0.5);
+
 const generateSequenceArray = (arrayLength, startNumber = 0) => Array.from({length: arrayLength}, (val, index) => index + startNumber);
 
 export{
@@ -61,5 +63,6 @@ export{
   extractRandomElement,
   extractRandomElements,
   getSomeRandomElements,
+  filterSomeElements,
   generateSequenceArray
 };

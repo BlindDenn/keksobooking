@@ -1,8 +1,11 @@
 import{ MOCK_DATA_ARRAY_LENGTH } from './constants.js';
 
 const
-  AVATAR_PICTURE_FILES_PATH = 'img/avatar/',
-  AVATAR_FILE_NAME_TEMPLATE = 'user{{xx}}.png',
+  // MOCK_DATA_ARRAY_LENGTH = 10,
+  AVATAR_PICTURES = {
+    filesPath: 'img/avatar/',
+    fileNameTemplate: 'user{{xx}}.png',
+  },
   TITLES = [
     'Классическая загородная вилла',
     'Уютная квартира в самом серце города',
@@ -50,16 +53,18 @@ const
     'Очень близко до магазинов, вокзала, полицейского участка.',
     'Побывав тут единожды, определенно захотите вернуться сюда снова и снова.',
   ],
-  PHOTOS_LINKS = [
-    'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
-    'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
-    'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg'
-  ];
+  PHOTOS = {
+    filesPath: 'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/',
+    filesNames: [
+      'duonguyen-8LrGtIxxa4w.jpg',
+      'brandon-hoogenboom-SNxQGWxZQi0.jpg',
+      'claire-rendall-b6kAwr1i0Iw.jpg'
+    ],
+  };
 
 const mockDataArraySettings = {
   arrayLength: MOCK_DATA_ARRAY_LENGTH,
-  avatarPictureFilesPath: AVATAR_PICTURE_FILES_PATH,
-  avatarFileNameTemplate: AVATAR_FILE_NAME_TEMPLATE,
+  avatarPictures: AVATAR_PICTURES,
   titles: TITLES,
   locationLimits: LOCATION_LIMITS,
   priceLimits: PRICE_LIMITS,
@@ -69,7 +74,7 @@ const mockDataArraySettings = {
   inOutTimes: IN_OUT_TIMES,
   features: FEATURES,
   descriptions: DESCRIPTIONS,
-  photosLinks: PHOTOS_LINKS,
+  photos: PHOTOS,
 };
 
 const getMockDataArraySetting = () => mockDataArraySettings;
