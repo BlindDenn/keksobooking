@@ -1,5 +1,7 @@
-import{ getDataArray } from './mock-data.js';
+// import{ getDataArray } from './mock-data.js';
+import{ generateOffers } from './offers.js';
 
-getDataArray();
+// getDataArray();
+generateOffers();
 
 // console.log(getDataArray());
