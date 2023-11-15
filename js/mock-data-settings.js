@@ -3,7 +3,7 @@ import{ MOCK_DATA_ARRAY_LENGTH } from './constants.js';
 const
   // MOCK_DATA_ARRAY_LENGTH = 10,
   AVATAR_PICTURES = {
-    filesPath: 'img/avatar/',
+    filesPath: 'img/avatars/',
     fileNameTemplate: 'user{{xx}}.png',
   },
   TITLES = [
@@ -32,8 +32,8 @@ const
     'bungalow',
     'hotel'
   ],
-  ROOM_MAX_AMOUNT = 7,
-  GUESTS_PER_ROOM_MAX = 4,
+  ROOM_MAX_AMOUNT = 5,
+  GUESTS_PER_ROOM_MAX = 2,
   IN_OUT_TIMES = [
     '12:00',
     '13:00',

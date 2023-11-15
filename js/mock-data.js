@@ -29,7 +29,7 @@ const createMockDataAuthorObj = ({avatarPictures: {filesPath}}) => ({
   avatar: `${filesPath}${getRandomAvatarFile()}`
 });
 
-const createAdress = (obj, {locationLimits: {precision}}) => `${(obj.lat).toFixed(precision)}, ${(obj.log).toFixed(precision)}`;
+const createAddress = (obj, {locationLimits: {precision}}) => `${(obj.lat).toFixed(precision)}, ${(obj.log).toFixed(precision)}`;
 
 const getRandomPrice = ({priceLimits: {minPrice, maxPrice, zeroesCount}}) => getRandomFromRange(minPrice / 10 ** zeroesCount, maxPrice / 10 ** zeroesCount) * 10 ** zeroesCount;
 
@@ -64,8 +64,8 @@ const createMockDataOfferObj = ({titles, types, roomMaxAmount, inOutTimes, featu
     features: filterSomeElements(features),
     description: getRandomElement(descriptions),
     photos: getSomeRandomElements(photos),
-    setAdress() {
-      this.adress = createAdress(this.location, settings);
+    setAddress() {
+      this.address = createAddress(this.location, settings);
     },
     setGuests() {
       this.guests = getRandomFromRange(this.rooms, this.rooms * guestsPerRoomMax);

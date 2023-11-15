@@ -56,6 +56,21 @@ const filterSomeElements = (arr) => arr.filter(() => Math.random() > 0.5);
 
 const generateSequenceArray = (arrayLength, startNumber = 0) => Array.from({length: arrayLength}, (val, index) => index + startNumber);
 
+const numWord = (value, words) => {
+  value = Math.abs(value) % 100;
+  const num = value % 10;
+  if(value > 10 && value < 20) {
+    return words[2];
+  }
+  if(num > 1 && num < 5) {
+    return words[1];
+  }
+  if(num === 1) {
+    return words[0];
+  }
+  return words[2];
+};
+
 export{
   getRandomFromRange,
   getRandomIndex,
@@ -64,5 +79,6 @@ export{
   extractRandomElements,
   getSomeRandomElements,
   filterSomeElements,
-  generateSequenceArray
+  generateSequenceArray,
+  numWord
 };
