@@ -1,4 +1,4 @@
-import{ getMockDataArraySettings } from './mock-data-settings.js';
+import{ getMockDataArraySettings } from './mock-offers-settings.js';
 import{
   getRandomFromRange,
   getRandomElement,

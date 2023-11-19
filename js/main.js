@@ -1,3 +1,3 @@
-import{ generateOffers } from './offers.js';
+import{ renderOffers } from './render-offers.js';
 
-generateOffers();
+renderOffers();

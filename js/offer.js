@@ -1,9 +1,6 @@
-import { getDataArray } from './mock-data.js';
-import { getRandomIndex, numWord } from './utils.js';
+import { numWord } from './utils.js';
 
-const mapCanvas = document.querySelector('#map-canvas');
 const offerTemplate = document.querySelector('#card').content.querySelector('.popup');
-const dataArray = getDataArray();
 const FEATURE_CLASS_MOD_SUBSTR = 'popup__feature--';
 const FEATURE_CLASS_MOD_SUBSTR_INDEX = 1;
 const TYPE_MAP = {
@@ -36,7 +33,7 @@ const setCheckinCheckout = (item, sourceData) => {
   item.textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
 };
 
-const setOffersFeatures = (item, sourceData) => {
+const getOffersFeatures = (item, sourceData) => {
   const featureItems = item.querySelectorAll('.popup__feature');
 
   featureItems.forEach((listItem) => {
@@ -63,7 +60,7 @@ const setAvatarImg = (item, sourceData) => {
   item.src = sourceData;
 };
 
-const generateOffer = ({author:{avatar}, offer:{title, address, price, type, rooms, guests, checkin, checkout, features, description, photos}}) => {
+const getOffer = ({author:{avatar}, offer:{title, address, price, type, rooms, guests, checkin, checkout, features, description, photos}}) => {
 
   const newOffer = offerTemplate.cloneNode(true);
 
@@ -74,33 +71,34 @@ const generateOffer = ({author:{avatar}, offer:{title, address, price, type, roo
       sourceData = false;
     }
 
-    if (sourceData) {
-      cb(item, sourceData);
-    } else {
+    if (!sourceData) {
       item.remove();
+      return;
     }
+
+    cb(item, sourceData);
   };
 
   generateOfferItem('.popup__title', title, setText);
   generateOfferItem('.popup__text--address', address, setText);
   generateOfferItem('.popup__text--price', price, setPrice);
   generateOfferItem('.popup__type', type, setType);
-  generateOfferItem('.popup__features', features, setOffersFeatures);
+  generateOfferItem('.popup__features', features, getOffersFeatures);
   generateOfferItem('.popup__text--capacity', [rooms, guests], setRoomsGuests);
   generateOfferItem('.popup__text--time', [checkin, checkout], setCheckinCheckout);
   generateOfferItem('.popup__description', description, setText);
   generateOfferItem('.popup__photos', photos, setPhotos);
   generateOfferItem('.popup__avatar', avatar, setAvatarImg);
 
-  mapCanvas.append(newOffer);
+  return newOffer;
 };
 
 // --- Генерация одной случайной карточки из массива объектов
 
-const generateOffers = () => {
-  const index = getRandomIndex(dataArray);
-  generateOffer(dataArray[index]);
-};
+// const generateOffers = () => {
+//   const index = getRandomIndex(dataArray);
+//   generateOffer(dataArray[index]);
+// };
 
 // --- Генерация всех карточек по числу объектов
 
@@ -108,4 +106,4 @@ const generateOffers = () => {
 //   dataArray.forEach((data) => generateOffer(data));
 // };
 
-export { generateOffers };
+export { getOffer };
