@@ -1,5 +1,7 @@
 import{ renderOffers } from './render-offers.js';
-import{ disableInteractiveElements } from './form.js';
+import{ initForm } from './form.js';
+import{ initnFilters } from './filters.js';
 
-disableInteractiveElements();
+initnFilters();
+initForm();
 renderOffers();

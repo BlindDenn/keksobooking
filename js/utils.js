@@ -71,6 +71,18 @@ const numWord = (value, words) => {
   return words[2];
 };
 
+const disableElements = (elements) => {
+  elements.forEach((element) => {
+    element.disabled = true;
+  });
+};
+
+const enableElements = (elements) => {
+  elements.forEach((element) => {
+    element.disabled = false;
+  });
+};
+
 export{
   getRandomFromRange,
   getRandomIndex,
@@ -80,5 +92,7 @@ export{
   getSomeRandomElements,
   filterSomeElements,
   generateSequenceArray,
-  numWord
+  numWord,
+  disableElements,
+  enableElements
 };
