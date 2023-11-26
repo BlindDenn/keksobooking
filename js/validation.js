@@ -22,26 +22,11 @@ const errorMessages = {
     `Цена не может быть меньше ${minValue}`,
 };
 
-const validateMinLength = (validatedParam, minLength) => {
-  if (validatedParam.length < minLength) {
-    return false;
-  }
-  return true;
-};
+const validateMinLength = (validatedParam, minLength) => validatedParam.length >= minLength;
 
-const validateMaxLength = (validatedParam, maxLength) => {
-  if (validatedParam.length > maxLength) {
-    return false;
-  }
-  return true;
-};
+const validateMaxLength = (validatedParam, maxLength) => validatedParam.length <= maxLength;
 
-const validateMinNumber = (validatedParam, minNumber) => {
-  if (validatedParam < minNumber) {
-    return false;
-  }
-  return true;
-};
+const validateMinNumber = (validatedParam, minNumber) => validatedParam >= minNumber;
 
 const validateForm = (form) => {
 
@@ -80,13 +65,11 @@ const validateForm = (form) => {
     }
   );
 
-  setPriceAttr(selectorType.value);
+  setPriceAttr(selectorTypeValue);
 
   selectorType.addEventListener('change', () => {
     selectorTypeValue = selectorType.value;
-    fieldPrice.min = setPriceMin(selectorTypeValue);
-    fieldPrice.setAttribute('data-pristine-min-message', errorMessages.MIN_PRICE_VALIDATION(MIN_PRICE_DEPENDECES[selectorTypeValue]));
-    fieldPrice.placeholder = setPriceFieldPlaceholder(selectorTypeValue);
+    setPriceAttr(selectorTypeValue);
   });
 
   pristine.addValidator(
