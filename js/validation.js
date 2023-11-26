@@ -30,6 +30,10 @@ const validateMinNumber = (validatedParam, minNumber) => validatedParam >= minNu
 
 const validateForm = (form) => {
 
+  const style = document.createElement('style');
+  document.head.appendChild(style);
+  style.sheet.insertRule('.text-help {color: red}');
+
   const fieldTitle = form.querySelector('#title');
 
   const fieldPrice = form.querySelector('#price');
