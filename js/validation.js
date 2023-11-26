@@ -106,6 +106,7 @@ const validateForm = (form) => {
   const onSelectorTypeChange = () => {
     selectorTypeValue = selectorType.value;
     setPriceAttr(selectorTypeValue);
+    pristine.validate(fieldPrice);
   };
 
   selectorType.addEventListener('change', () => onSelectorTypeChange());
