@@ -62,7 +62,7 @@ const validateForm = (form) => {
   const fieldTitle = form.querySelector('#title');
 
   const fieldPrice = form.querySelector('#price');
-  const selectorType = document.getElementById('type');
+  const selectorType = form.querySelector('#type');
   let selectorTypeValue = selectorType.value;
   const setPriceFieldPlaceholder = (value) => MIN_PRICE_DEPENDECES[value];
   const setPriceMin = (value) => MIN_PRICE_DEPENDECES[value];
@@ -108,7 +108,7 @@ const validateForm = (form) => {
     setPriceAttr(selectorTypeValue);
   };
 
-  selectorType.addEventListener('change', onSelectorTypeChange());
+  selectorType.addEventListener('change', () => onSelectorTypeChange());
 
   pristine.addValidator(
     fieldTitle,
