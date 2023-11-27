@@ -22,14 +22,22 @@ const errorMessages = {
     `Цена не может быть меньше ${minValue}`,
   CAPACITY_VALIDATION: (testElement) => {
     const testValue = +testElement.value;
-    if (testValue === 100) {
+    if (testValue === getExtremeRoomsValue()) {
       return 'Вообще не для гостей';
     }
     return `Для не более ${testValue} ${numWord(testValue, ['гостя', 'гостей', 'гостей'])}`;
   },
 };
+const extremeRoomsValue = getExtremeRoomsValue();
 
-const validateMinLength = (validatedParam, minLength) => validatedParam.length >= minLength;
+function getExtremeRoomsValue() {
+  const roomsNodeList = document.querySelectorAll('#room_number > option');
+  const roomsValues = Array.from(roomsNodeList)
+    .map((element) => element.value);
+  return Math.max(...roomsValues);
+}
+
+const validateMinLength = (value, minLength) => value.length >= minLength;
 
 const validateMaxLength = (validatedParam, maxLength) => validatedParam.length <= maxLength;
 
@@ -38,13 +46,13 @@ const validateMinNumber = (validatedParam, minNumber) => validatedParam >= minNu
 const validateCapacity = (validatedParam, testElement) => {
   validatedParam = +validatedParam;
   const testValue = +testElement.value;
-  if (validatedParam === 0 && testValue === 100) {
+  if (validatedParam === 0 && testValue === extremeRoomsValue) {
     return true;
   }
-  if (validatedParam === 0 && testValue !== 100) {
+  if (validatedParam === 0 && testValue !== extremeRoomsValue) {
     return false;
   }
-  if (validatedParam > 0 && testValue === 100) {
+  if (validatedParam > 0 && testValue === extremeRoomsValue) {
     return false;
   }
   if (validatedParam > testValue) {
