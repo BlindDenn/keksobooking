@@ -11,37 +11,35 @@ const MIN_PRICE_DEPENDECES = {
   house: 5000,
   palace: 10000,
 };
-const errorMessages = {
-  REQUIRED_VALIDATION: 'Поле должно быть обязательно заполнено',
-  MIN_LENGTH_VALIDATION: (element) =>
-    `Длинна заголовка ${element.value.length} ${numWord(element.value.length, ['символ', 'символа', 'символов'])} из ${TITLE_MIN_LENGTH} минимальных.`,
-  MAX_LENGTH_VALIDATION: (element) =>
-    `Длинна заголовка ${element.value.length} ${numWord(element.value.length, ['символ', 'символа', 'символов'])}, допустимо ${TITLE_MAX_LENGTH}. `,
-  MAX_PRICE_VALIDATION: `Превышена максимальная цена ${PRICE_MAX}`,
-  MIN_PRICE_VALIDATION: (minValue) =>
-    `Цена не может быть меньше ${minValue}`,
-  CAPACITY_VALIDATION: (testElement) => {
-    const testValue = +testElement.value;
-    if (testValue === getExtremeRoomsValue()) {
-      return 'Вообще не для гостей';
-    }
-    return `Для не более ${testValue} ${numWord(testValue, ['гостя', 'гостей', 'гостей'])}`;
-  },
-};
-const extremeRoomsValue = getExtremeRoomsValue();
 
-function getExtremeRoomsValue() {
+const getExtremeRoomsValue = () => {
   const roomsNodeList = document.querySelectorAll('#room_number > option');
   const roomsValues = Array.from(roomsNodeList)
     .map((element) => element.value);
   return Math.max(...roomsValues);
-}
+};
+
+const extremeRoomsValue = getExtremeRoomsValue();
+
+const errorMessages = {
+  REQUIRED_VALIDATION: 'Поле должно быть обязательно заполнено',
+  MIN_LENGTH_VALIDATION: (element) =>
+    `Длинна заголовка ${element.value.length} ${numWord(element.value.length, ['символ', 'символа', 'символов'])} из ${TITLE_MIN_LENGTH} минимальных`,
+  MAX_LENGTH_VALIDATION: (element) =>
+    `Длинна заголовка ${element.value.length} ${numWord(element.value.length, ['символ', 'символа', 'символов'])} из ${TITLE_MAX_LENGTH} допустимых`,
+  MAX_PRICE_VALIDATION: `Превышена максимальная цена ${PRICE_MAX}`,
+  CAPACITY_VALIDATION: (testElement) => {
+    const testValue = +testElement.value;
+    if (testValue === extremeRoomsValue) {
+      return 'Вообще не для гостей';
+    }
+    return `Не более ${testValue} ${numWord(testValue, ['гостя', 'гостей', 'гостей'])}`;
+  },
+};
 
 const validateMinLength = (value, minLength) => value.length >= minLength;
 
 const validateMaxLength = (validatedParam, maxLength) => validatedParam.length <= maxLength;
-
-const validateMinNumber = (validatedParam, minNumber) => validatedParam >= minNumber;
 
 const validateCapacity = (validatedParam, testElement) => {
   validatedParam = +validatedParam;
@@ -65,15 +63,20 @@ const validateForm = (form) => {
 
   const style = document.createElement('style');
   document.head.appendChild(style);
-  style.sheet.insertRule('.text-help {color: red}');
+  style.sheet.insertRule('.text-help {color: red; position: absolute; transform: translateY(4px)}');
 
   const fieldTitle = form.querySelector('#title');
 
-  const fieldPrice = form.querySelector('#price');
   const selectorType = form.querySelector('#type');
-  let selectorTypeValue = selectorType.value;
+  const fieldPrice = form.querySelector('#price');
+
   const setPriceFieldPlaceholder = (value) => MIN_PRICE_DEPENDECES[value];
   const setPriceMin = (value) => MIN_PRICE_DEPENDECES[value];
+
+  const setPriceAttr = (value) => {
+    fieldPrice.min = setPriceMin(value);
+    fieldPrice.placeholder = setPriceFieldPlaceholder(value);
+  };
 
   const selectCapacity = form.querySelector('#capacity');
   const selectRooms = form.querySelector('#room_number');
@@ -82,12 +85,6 @@ const validateForm = (form) => {
   const selectorTimeOut = form.querySelector('#timeout');
 
   fieldTitle.setAttribute('data-pristine-required-message', errorMessages.REQUIRED_VALIDATION);
-
-  const setPriceAttr = (value) => {
-    fieldPrice.min = setPriceMin(value);
-    fieldPrice.setAttribute('data-pristine-min-message', errorMessages.MIN_PRICE_VALIDATION(MIN_PRICE_DEPENDECES[value]));
-    fieldPrice.placeholder = setPriceFieldPlaceholder(value);
-  };
 
   fieldPrice.setAttribute('data-pristine-required-message', errorMessages.REQUIRED_VALIDATION);
   fieldPrice.setAttribute('data-pristine-max-message', errorMessages.MAX_PRICE_VALIDATION);
@@ -109,16 +106,6 @@ const validateForm = (form) => {
     }
   );
 
-  setPriceAttr(selectorTypeValue);
-
-  const onSelectorTypeChange = () => {
-    selectorTypeValue = selectorType.value;
-    setPriceAttr(selectorTypeValue);
-    pristine.validate(fieldPrice);
-  };
-
-  selectorType.addEventListener('change', () => onSelectorTypeChange());
-
   pristine.addValidator(
     fieldTitle,
     (value) => validateMinLength(value, TITLE_MIN_LENGTH),
@@ -131,10 +118,22 @@ const validateForm = (form) => {
     () => errorMessages.MAX_LENGTH_VALIDATION(fieldTitle)
   );
 
+  setPriceAttr(selectorType.value);
+
+  const onSelectorTypeChange = () => {
+    setPriceAttr(selectorType.value);
+    pristine.validate(fieldPrice);
+  };
+
+  selectorType.addEventListener('change', onSelectorTypeChange);
+
+  const validateMinPrice = (value) => value >= MIN_PRICE_DEPENDECES[selectorType.value];
+  const getMinPriceErrorMessage = () => `Цена не может быть меньше ${MIN_PRICE_DEPENDECES[selectorType.value]}`;
+
   pristine.addValidator(
     fieldPrice,
-    (value) => validateMinNumber(value, MIN_PRICE_DEPENDECES[selectorTypeValue]),
-    () => errorMessages.MIN_PRICE_VALIDATION(MIN_PRICE_DEPENDECES[selectorTypeValue])
+    validateMinPrice,
+    getMinPriceErrorMessage
   );
 
   pristine.addValidator(
@@ -142,8 +141,6 @@ const validateForm = (form) => {
     (value) => validateCapacity(value, selectRooms),
     () => errorMessages.CAPACITY_VALIDATION(selectRooms)
   );
-
-  pristine.validate(selectCapacity);
 
   selectRooms.addEventListener('change', () => {
     pristine.validate(selectCapacity);
