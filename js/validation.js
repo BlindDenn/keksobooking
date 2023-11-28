@@ -23,8 +23,6 @@ const extremeRoomsValue = getExtremeRoomsValue();
 
 const errorMessages = {
   REQUIRED_VALIDATION: 'Поле должно быть обязательно заполнено',
-  MIN_LENGTH_VALIDATION: (element) =>
-    `Длинна заголовка ${element.value.length} ${numWord(element.value.length, ['символ', 'символа', 'символов'])} из ${TITLE_MIN_LENGTH} минимальных`,
   MAX_LENGTH_VALIDATION: (element) =>
     `Длинна заголовка ${element.value.length} ${numWord(element.value.length, ['символ', 'символа', 'символов'])} из ${TITLE_MAX_LENGTH} допустимых`,
   MAX_PRICE_VALIDATION: `Превышена максимальная цена ${PRICE_MAX}`,
@@ -37,27 +35,7 @@ const errorMessages = {
   },
 };
 
-const validateMinLength = (value, minLength) => value.length >= minLength;
-
-const validateMaxLength = (validatedParam, maxLength) => validatedParam.length <= maxLength;
-
-const validateCapacity = (validatedParam, testElement) => {
-  validatedParam = +validatedParam;
-  const testValue = +testElement.value;
-  if (validatedParam === 0 && testValue === extremeRoomsValue) {
-    return true;
-  }
-  if (validatedParam === 0 && testValue !== extremeRoomsValue) {
-    return false;
-  }
-  if (validatedParam > 0 && testValue === extremeRoomsValue) {
-    return false;
-  }
-  if (validatedParam > testValue) {
-    return false;
-  }
-  return true;
-};
+// const validateMaxLength = (validatedParam, maxLength) => validatedParam.length <= maxLength;
 
 const validateForm = (form) => {
 
@@ -106,16 +84,24 @@ const validateForm = (form) => {
     }
   );
 
-  pristine.addValidator(
-    fieldTitle,
-    (value) => validateMinLength(value, TITLE_MIN_LENGTH),
-    () => errorMessages.MIN_LENGTH_VALIDATION(fieldTitle)
-  );
+  const validateMinLength = (value) => value.length >= TITLE_MIN_LENGTH;
+  const minLengthErrorMessage = () =>
+    `Длинна заголовка ${fieldTitle.value.length} ${numWord(fieldTitle.value.length, ['символ', 'символа', 'символов'])} из ${TITLE_MIN_LENGTH} минимальных`;
 
   pristine.addValidator(
     fieldTitle,
-    (value) => validateMaxLength(value, TITLE_MAX_LENGTH),
-    () => errorMessages.MAX_LENGTH_VALIDATION(fieldTitle)
+    validateMinLength,
+    minLengthErrorMessage
+  );
+
+  const validateMaxLength = (value) => value.length <= TITLE_MAX_LENGTH;
+  const maxLengthErrorMessage = () =>
+    `Длинна заголовка ${fieldTitle.value.length} ${numWord(fieldTitle.value.length, ['символ', 'символа', 'символов'])} из ${TITLE_MAX_LENGTH} допустимых`;
+
+  pristine.addValidator(
+    fieldTitle,
+    validateMaxLength,
+    maxLengthErrorMessage
   );
 
   setPriceAttr(selectorType.value);
@@ -136,32 +122,65 @@ const validateForm = (form) => {
     getMinPriceErrorMessage
   );
 
+  const validateCapacity = (value) => {
+    value = +value;
+    const selectRoomsNum = +selectRooms.value;
+    if (value === 0 && selectRoomsNum === extremeRoomsValue) {
+      return true;
+    }
+    if (value === 0 && selectRoomsNum !== extremeRoomsValue) {
+      return false;
+    }
+    if (value > 0 && selectRoomsNum === extremeRoomsValue) {
+      return false;
+    }
+    if (value > selectRoomsNum) {
+      return false;
+    }
+    return true;
+  };
+
+  const getCapacityErrorMessage = () => {
+    const testValue = +selectRooms.value;
+    if (testValue === extremeRoomsValue) {
+      return 'Вообще не для гостей';
+    }
+    return `Не более ${testValue} ${numWord(testValue, ['гостя', 'гостей', 'гостей'])}`;
+  };
+
   pristine.addValidator(
     selectCapacity,
-    (value) => validateCapacity(value, selectRooms),
-    () => errorMessages.CAPACITY_VALIDATION(selectRooms)
+    validateCapacity,
+    getCapacityErrorMessage
   );
 
-  selectRooms.addEventListener('change', () => {
+  const onSelectRoomsChange = () => {
     pristine.validate(selectCapacity);
-  });
+  };
 
-  selectorTimeIn.addEventListener('change', () => {
+  selectRooms.addEventListener('change', onSelectRoomsChange);
+
+  const onSelectTimeInChange = () => {
     selectorTimeOut.value = selectorTimeIn.value;
-  });
+  };
 
-  selectorTimeOut.addEventListener('change', () => {
+  selectorTimeIn.addEventListener('change', onSelectTimeInChange);
+
+  const onSelectTimeOutChange = () => {
     selectorTimeIn.value = selectorTimeOut.value;
-  });
+  };
+
+  selectorTimeOut.addEventListener('change', onSelectTimeOutChange);
 
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
     const isValid = pristine.validate();
     if (!isValid) {
-      alert('Форма невалидна');
-      return;
+      alert(isValid);
+      return false;
     }
-    alert('Форма валидна');
+    alert(isValid);
+    return true;
   });
 };
 
