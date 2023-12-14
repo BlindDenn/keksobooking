@@ -176,10 +176,8 @@ const validateForm = (form) => {
     evt.preventDefault();
     const isValid = pristine.validate();
     if (!isValid) {
-      alert(isValid);
       return false;
     }
-    alert(isValid);
     return true;
   });
 };
