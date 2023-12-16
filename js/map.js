@@ -37,6 +37,8 @@ const mainMarker = L.marker(
   }
 );
 
+const markerGroup = L.layerGroup();
+
 const setOfferMarker = (obj) => {
   const offerMarker = L.marker(
     obj.offer.location,
@@ -67,8 +69,11 @@ const initMap = () => {
     .addTo(map)
     .on('drag', (evt) => setAddressFieldValue(evt.latlng));
 
+  markerGroup
+    .addTo(map);
+
   getDataArray().forEach((el) => {
-    setOfferMarker(el).addTo(map);
+    setOfferMarker(el).addTo(markerGroup);
   });
 };
 
