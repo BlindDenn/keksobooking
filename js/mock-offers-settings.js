@@ -1,7 +1,9 @@
-import{ MOCK_DATA_ARRAY_LENGTH } from './constants.js';
+import{
+  LAT_LNG_PRECISSION
+} from './constants.js';
 
 const
-  // MOCK_DATA_ARRAY_LENGTH = 10,
+  MOCK_DATA_ARRAY_LENGTH = 10,
   AVATAR_PICTURES = {
     filesPath: 'img/avatars/',
     fileNameTemplate: 'user{{xx}}.png',
@@ -16,9 +18,9 @@ const
   LOCATION_LIMITS = {
     latMin: 35.65,
     latMax: 35.7,
-    logMin: 139.7,
-    logMax: 139.8,
-    precision: 5, //знаков после запятой
+    lngMin: 139.7,
+    lngMax: 139.8,
+    precision: LAT_LNG_PRECISSION
   },
   PRICE_LIMITS = {
     minPrice: 1000,

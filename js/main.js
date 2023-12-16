@@ -1,7 +1,8 @@
-import{ renderOffers } from './render-offers.js';
-import{ initForm } from './form.js';
-import{ initnFilters } from './filters.js';
+// import{ renderOffers } from './render-offers.js';
+import{ disableFilters } from './filters.js';
+import{ disableForm } from './form.js';
+import{ initMap } from './map.js';
 
-initnFilters();
-initForm();
-renderOffers();
+disableFilters();
+disableForm();
+initMap();

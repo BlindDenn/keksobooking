@@ -7,7 +7,7 @@ const map = document.querySelector('.map');
 const mapFilters = map.querySelector('.map__filters');
 const mapFiltersEltments = map.querySelectorAll('select, fieldset');
 
-const disableFilter = () => {
+const disableFilters = () => {
   mapFilters.classList.add('map__filters--disabled');
   disableElements(mapFiltersEltments);
 };
@@ -17,11 +17,7 @@ const enableFilters = () => {
   enableElements(mapFiltersEltments);
 };
 
-const initnFilters = () => {
-  disableFilter();
-  enableFilters();
-};
-
 export{
-  initnFilters,
+  disableFilters,
+  enableFilters,
 };

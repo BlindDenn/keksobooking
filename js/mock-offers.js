@@ -18,9 +18,9 @@ const createAvatarFiles = ({arrayLength, avatarPictures: {fileNameTemplate: temp
 
 const avatarFiles = createAvatarFiles(settings);
 
-const createLocation = ({locationLimits: {latMin, latMax, logMin, logMax, precision}}) => ({
+const createLocation = ({locationLimits: {latMin, latMax, lngMin, lngMax, precision}}) => ({
   lat: getRandomFromRange(latMin, latMax, precision),
-  log: getRandomFromRange(logMin, logMax, precision),
+  lng: getRandomFromRange(lngMin, lngMax, precision),
 });
 
 const getRandomAvatarFile = extractRandomElements(avatarFiles);
@@ -29,7 +29,7 @@ const createMockDataAuthorObj = ({avatarPictures: {filesPath}}) => ({
   avatar: `${filesPath}${getRandomAvatarFile()}`
 });
 
-const createAddress = (obj, {locationLimits: {precision}}) => `${(obj.lat).toFixed(precision)}, ${(obj.log).toFixed(precision)}`;
+const createAddress = (obj, {locationLimits: {precision}}) => `${(obj.lat).toFixed(precision)}, ${(obj.lng).toFixed(precision)}`;
 
 const getRandomPrice = ({priceLimits: {minPrice, maxPrice, zeroesCount}}) => getRandomFromRange(minPrice / 10 ** zeroesCount, maxPrice / 10 ** zeroesCount) * 10 ** zeroesCount;
 
