@@ -1,16 +1,10 @@
 // import{ getForm } from './elements.js';
 import{ numWord } from './utils.js';
+import{PRICE_DEPENDECES} from './constants.js';
 
 const TITLE_MIN_LENGTH = 10;
 const TITLE_MAX_LENGTH = 15;
-const PRICE_MAX = 100000;
-const MIN_PRICE_DEPENDECES = {
-  bungalow: 0,
-  flat: 1000,
-  hotel: 3000,
-  house: 5000,
-  palace: 10000,
-};
+const maxPrice = PRICE_DEPENDECES.maxPrice;
 
 const getExtremeRoomsValue = () => {
   const roomsNodeList = document.querySelectorAll('#room_number > option');
@@ -25,7 +19,7 @@ const errorMessages = {
   REQUIRED_VALIDATION: 'Поле должно быть обязательно заполнено',
   MAX_LENGTH_VALIDATION: (element) =>
     `Длинна заголовка ${element.value.length} ${numWord(element.value.length, ['символ', 'символа', 'символов'])} из ${TITLE_MAX_LENGTH} допустимых`,
-  MAX_PRICE_VALIDATION: `Превышена максимальная цена ${PRICE_MAX}`,
+  MAX_PRICE_VALIDATION: `Превышена максимальная цена ${maxPrice}`,
   CAPACITY_VALIDATION: (testElement) => {
     const testValue = +testElement.value;
     if (testValue === extremeRoomsValue) {
@@ -48,8 +42,8 @@ const validateForm = (form) => {
   const selectorType = form.querySelector('#type');
   const fieldPrice = form.querySelector('#price');
 
-  const setPriceFieldPlaceholder = (value) => MIN_PRICE_DEPENDECES[value];
-  const setPriceMin = (value) => MIN_PRICE_DEPENDECES[value];
+  const setPriceFieldPlaceholder = (value) => PRICE_DEPENDECES[value];
+  const setPriceMin = (value) => PRICE_DEPENDECES[value];
 
   const setPriceAttr = (value) => {
     fieldPrice.min = setPriceMin(value);
@@ -67,6 +61,7 @@ const validateForm = (form) => {
   fieldPrice.setAttribute('data-pristine-required-message', errorMessages.REQUIRED_VALIDATION);
   fieldPrice.setAttribute('data-pristine-max-message', errorMessages.MAX_PRICE_VALIDATION);
   fieldPrice.removeAttribute('min');
+  fieldPrice.max = PRICE_DEPENDECES.maxPrice;
 
   const pristine = new Pristine(
     form,
@@ -113,8 +108,8 @@ const validateForm = (form) => {
 
   selectorType.addEventListener('change', onSelectorTypeChange);
 
-  const validateMinPrice = (value) => value >= MIN_PRICE_DEPENDECES[selectorType.value];
-  const getMinPriceErrorMessage = () => `Цена не может быть меньше ${MIN_PRICE_DEPENDECES[selectorType.value]}`;
+  const validateMinPrice = (value) => value >= PRICE_DEPENDECES[selectorType.value];
+  const getMinPriceErrorMessage = () => `Цена не может быть меньше ${PRICE_DEPENDECES[selectorType.value]}`;
 
   pristine.addValidator(
     fieldPrice,
