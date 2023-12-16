@@ -42,7 +42,7 @@ const validateForm = (form) => {
   const selectorType = form.querySelector('#type');
   const fieldPrice = form.querySelector('#price');
 
-  const setPriceFieldPlaceholder = (value) => PRICE_DEPENDECES[value];
+  const setPriceFieldPlaceholder = (value) => `от ${PRICE_DEPENDECES[value]}`;
   const setPriceMin = (value) => PRICE_DEPENDECES[value];
 
   const setPriceAttr = (value) => {
