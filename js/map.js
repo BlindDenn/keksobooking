@@ -3,12 +3,19 @@ import{
   MAIN_PIN_ICON_HEIGHT,
   PIN_ICON_HEIGHT
 } from './constants.js';
-import{ enableFilters } from './filters.js';
+import{
+  enableFilters
+} from './filters.js';
 import{
   initForm,
   setAddressFieldValue
 } from './form.js';
-import{ getDataArray } from './mock-offers.js';
+import{
+  getDataArray
+} from './mock-offers.js';
+import {
+  getOffer
+} from './offer.js';
 
 const mainPinIcon = L.icon({
   iconUrl: '../img/main-pin.svg',
@@ -21,6 +28,26 @@ const pinIcon = L.icon({
   iconSize: [PIN_ICON_HEIGHT, PIN_ICON_HEIGHT],
   iconAnchor: [PIN_ICON_HEIGHT / 2, PIN_ICON_HEIGHT],
 });
+
+const mainMarker = L.marker(
+  START_LAT_LNG,
+  {
+    icon: mainPinIcon,
+    draggable: true,
+  }
+);
+
+const setOfferMarker = (obj) => {
+  const offerMarker = L.marker(
+    obj.offer.location,
+    {
+      icon: pinIcon
+    }
+  )
+    .bindPopup(getOffer(obj));
+
+  return offerMarker;
+};
 
 const initMap = () => {
 
@@ -36,30 +63,13 @@ const initMap = () => {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
 
-  const mainMarker = L.marker(
-    START_LAT_LNG,
-    {
-      icon: mainPinIcon,
-      draggable: true,
-    }
-  );
-
-  const setOfferMarker = (obj) => {
-    L.marker(
-      obj.offer.location,
-      { icon: pinIcon }
-    ).addTo(map)
-      .bindPopup('Попап, панимаиш!');
-  };
-
-  mainMarker.addTo(map);
+  mainMarker
+    .addTo(map)
+    .on('drag', (evt) => setAddressFieldValue(evt.latlng));
 
   getDataArray().forEach((el) => {
-    setOfferMarker(el);
+    setOfferMarker(el).addTo(map);
   });
-
-  mainMarker.on('drag', (evt) => setAddressFieldValue(evt.latlng));
-
 };
 
 export{ initMap };
