@@ -26,7 +26,14 @@ const sliderOptions = {
   connect: 'lower',
   padding: [PRICE_DEPENDECES.flat, 0],
   step: 100,
-  animation: false,
+  format: {
+    to: function (value) {
+      return value.toFixed(0);
+    },
+    from: function (value) {
+      return value;
+    }
+  },
   range: {
     'min': 0,
     'max': PRICE_DEPENDECES.maxPrice,
@@ -45,8 +52,8 @@ typeSelector.addEventListener('change', () => {
 
 priceField.addEventListener('change', () => priceSlider.noUiSlider.set(priceField.value));
 
-priceSlider.noUiSlider.on('slide', (evt) => {
-  priceField.value = +evt[0];
+priceSlider.noUiSlider.on('slide', (arr) => {
+  priceField.value = arr[0];
   priceField.dispatchEvent(forceInput);
 });
 
