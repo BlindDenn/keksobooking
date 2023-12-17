@@ -1,6 +1,6 @@
 // import{ getForm } from './elements.js';
 import{ numWord } from './utils.js';
-import{PRICE_DEPENDECES} from './constants.js';
+import{ PRICE_DEPENDECES } from './constants.js';
 
 const TITLE_MIN_LENGTH = 10;
 const TITLE_MAX_LENGTH = 15;
@@ -101,12 +101,12 @@ const validateForm = (form) => {
 
   setPriceAttr(selectorType.value);
 
-  const onSelectorTypeChange = () => {
+  const onSelectorTypeInput = () => {
     setPriceAttr(selectorType.value);
     pristine.validate(fieldPrice);
   };
 
-  selectorType.addEventListener('change', onSelectorTypeChange);
+  selectorType.addEventListener('input', onSelectorTypeInput);
 
   const validateMinPrice = (value) => value >= PRICE_DEPENDECES[selectorType.value];
   const getMinPriceErrorMessage = () => `Цена не может быть меньше ${PRICE_DEPENDECES[selectorType.value]}`;

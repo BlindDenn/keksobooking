@@ -12,7 +12,10 @@ import{ validateForm } from './validation.js';
 const form = document.querySelector('.ad-form');
 const formFieldsets = form.querySelectorAll('fieldset');
 const addressField = form.querySelector('#address');
+const priceField = form.querySelector('#price');
 const priceSlider = form.querySelector('.ad-form__slider');
+
+const getPriceSlider = () => priceSlider;
 
 const setAddressFieldValue = ({lat, lng}) => {
   const fixedData = (val) => val.toFixed(LAT_LNG_PRECISSION);
@@ -32,10 +35,18 @@ const enableForm = () => {
 noUiSlider.create(priceSlider, {
   start: 50000,
   connect: 'lower',
+  step: 1000,
   range: {
-    'min': 0,
+    'min': 1000,
     'max': PRICE_DEPENDECES.maxPrice,
   }
+});
+
+const forceInput = new Event('input');
+
+priceSlider.noUiSlider.on('slide', (evt) => {
+  priceField.value = +evt[0];
+  priceField.dispatchEvent(forceInput);
 });
 
 const initForm = () => {
@@ -47,5 +58,6 @@ const initForm = () => {
 export{
   disableForm,
   initForm,
-  setAddressFieldValue
+  setAddressFieldValue,
+  getPriceSlider
 };
