@@ -39,15 +39,15 @@ const validateForm = (form) => {
 
   const fieldTitle = form.querySelector('#title');
 
-  const selectorType = form.querySelector('#type');
-  const fieldPrice = form.querySelector('#price');
+  const typeSelector = form.querySelector('#type');
+  const priceField = form.querySelector('#price');
 
   const setPriceFieldPlaceholder = (value) => `от ${PRICE_DEPENDECES[value]}`;
   const setPriceMin = (value) => PRICE_DEPENDECES[value];
 
   const setPriceAttr = (value) => {
-    fieldPrice.min = setPriceMin(value);
-    fieldPrice.placeholder = setPriceFieldPlaceholder(value);
+    priceField.min = setPriceMin(value);
+    priceField.placeholder = setPriceFieldPlaceholder(value);
   };
 
   const selectCapacity = form.querySelector('#capacity');
@@ -58,10 +58,10 @@ const validateForm = (form) => {
 
   fieldTitle.setAttribute('data-pristine-required-message', errorMessages.REQUIRED_VALIDATION);
 
-  fieldPrice.setAttribute('data-pristine-required-message', errorMessages.REQUIRED_VALIDATION);
-  fieldPrice.setAttribute('data-pristine-max-message', errorMessages.MAX_PRICE_VALIDATION);
-  fieldPrice.removeAttribute('min');
-  fieldPrice.max = PRICE_DEPENDECES.maxPrice;
+  priceField.setAttribute('data-pristine-required-message', errorMessages.REQUIRED_VALIDATION);
+  priceField.setAttribute('data-pristine-max-message', errorMessages.MAX_PRICE_VALIDATION);
+  priceField.removeAttribute('min');
+  priceField.max = PRICE_DEPENDECES.maxPrice;
 
   const pristine = new Pristine(
     form,
@@ -99,20 +99,20 @@ const validateForm = (form) => {
     maxLengthErrorMessage
   );
 
-  setPriceAttr(selectorType.value);
+  setPriceAttr(typeSelector.value);
 
-  const onSelectorTypeInput = () => {
-    setPriceAttr(selectorType.value);
-    pristine.validate(fieldPrice);
+  const ontypeSelectorInput = () => {
+    setPriceAttr(typeSelector.value);
+    pristine.validate(priceField);
   };
 
-  selectorType.addEventListener('input', onSelectorTypeInput);
+  typeSelector.addEventListener('input', ontypeSelectorInput);
 
-  const validateMinPrice = (value) => value >= PRICE_DEPENDECES[selectorType.value];
-  const getMinPriceErrorMessage = () => `Цена не может быть меньше ${PRICE_DEPENDECES[selectorType.value]}`;
+  const validateMinPrice = (value) => value >= PRICE_DEPENDECES[typeSelector.value];
+  const getMinPriceErrorMessage = () => `Цена не может быть меньше ${PRICE_DEPENDECES[typeSelector.value]}`;
 
   pristine.addValidator(
-    fieldPrice,
+    priceField,
     validateMinPrice,
     getMinPriceErrorMessage
   );
