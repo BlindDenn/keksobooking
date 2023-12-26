@@ -3,8 +3,8 @@ const START_LAT_LNG = {
   lng: 139.78,
 };
 const LAT_LNG_PRECISSION = 5;
-const MAIN_PIN_ICON_HEIGHT = 32;
-const PIN_ICON_HEIGHT = 24;
+const MAIN_PIN_ICON_HEIGHT = 52;
+const PIN_ICON_HEIGHT = 40;
 const PRICE_DEPENDECES = {
   bungalow: 0,
   flat: 1000,

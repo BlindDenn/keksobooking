@@ -58,7 +58,7 @@ const initMap = () => {
       enableFilters();
       initForm();
     })
-    .setView(START_LAT_LNG, 12);
+    .setView(START_LAT_LNG, 13);
 
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
