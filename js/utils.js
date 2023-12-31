@@ -83,6 +83,31 @@ const enableElements = (elements) => {
   });
 };
 
+
+const showAlert = (element = document.body, message, showAlertTime) => {
+  const alertContainer = document.createElement('div');
+  alertContainer.style.zIndex = '1000';
+  alertContainer.style.position = 'absolute';
+  alertContainer.style.left = '20px';
+  alertContainer.style.bottom = '20px';
+  alertContainer.style.right = '20px';
+  alertContainer.style.padding = '10px 6px';
+  alertContainer.style.color = 'red';
+  alertContainer.style.fontSize = '16px';
+  alertContainer.style.fontWeight = '700';
+  alertContainer.style.lineHeight = '16px';
+  alertContainer.style.textAlign = 'center';
+  alertContainer.style.backgroundColor = '#cccccc';
+
+  alertContainer.textContent = message;
+
+  element.append(alertContainer);
+
+  setTimeout(() => {
+    alertContainer.remove();
+  }, showAlertTime);
+};
+
 export{
   getRandomFromRange,
   getRandomIndex,
@@ -94,5 +119,6 @@ export{
   generateSequenceArray,
   numWord,
   disableElements,
-  enableElements
+  enableElements,
+  showAlert
 };

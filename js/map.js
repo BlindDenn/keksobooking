@@ -11,11 +11,14 @@ import{
   setAddressFieldValue
 } from './form.js';
 import{
-  getDataArray
-} from './mock-offers.js';
+  getDataArray,
+  onGetDataError
+} from './api.js';
 import {
   getOffer
 } from './offer.js';
+
+const mapContainer = document.querySelector('#map-canvas');
 
 const mainPinIcon = L.icon({
   iconUrl: '../img/main-pin.svg',
@@ -41,7 +44,7 @@ const markerGroup = L.layerGroup();
 
 const setOfferMarker = (obj) => {
   const offerMarker = L.marker(
-    obj.offer.location,
+    obj.location,
     {
       icon: pinIcon
     }
@@ -49,6 +52,17 @@ const setOfferMarker = (obj) => {
     .bindPopup(getOffer(obj));
 
   return offerMarker;
+};
+
+const addOfferMarkers = async() => {
+  try {
+    const recievedDataArray = await getDataArray();
+    recievedDataArray.forEach((el) => {
+      setOfferMarker(el).addTo(markerGroup);
+    });
+  } catch(err) {
+    onGetDataError(mapContainer);
+  }
 };
 
 const initMap = () => {
@@ -72,9 +86,7 @@ const initMap = () => {
   markerGroup
     .addTo(map);
 
-  getDataArray().forEach((el) => {
-    setOfferMarker(el).addTo(markerGroup);
-  });
+  addOfferMarkers();
 };
 
 export{ initMap };
