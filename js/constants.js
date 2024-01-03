@@ -12,6 +12,7 @@ const PRICE_DEPENDECES = {
   house: 5000,
   palace: 10000,
   maxPrice: 100000,
+  defaultType: 'flat',
 };
 const ERROR_MESSAGE_SHOW_TIME = 5000;
 

@@ -65,13 +65,14 @@ const addOfferMarkers = async() => {
   }
 };
 
+const map = L.map('map-canvas');
+
 const initMap = () => {
 
-  const map = L.map('map-canvas')
-    .on('load', () => {
-      enableFilters();
-      initForm();
-    })
+  map.on('load', () => {
+    enableFilters();
+    initForm();
+  })
     .setView(START_LAT_LNG, 13);
 
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -89,4 +90,12 @@ const initMap = () => {
   addOfferMarkers();
 };
 
-export{ initMap };
+const resetMapView = () => {
+  map.setView(START_LAT_LNG, 13);
+  mainMarker.setLatLng(START_LAT_LNG);
+};
+
+export{
+  initMap,
+  resetMapView
+};
