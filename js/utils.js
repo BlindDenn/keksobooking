@@ -108,6 +108,8 @@ const showAlert = (element = document.body, message, showAlertTime) => {
   }, showAlertTime);
 };
 
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
 export{
   getRandomFromRange,
   getRandomIndex,
@@ -120,5 +122,6 @@ export{
   numWord,
   disableElements,
   enableElements,
-  showAlert
+  showAlert,
+  isEscapeKey
 };

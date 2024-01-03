@@ -30,9 +30,12 @@ const load = (
 
 const getDataArray = () => load();
 
+const uploadData = (data) => load(Route.SEND_DATA, Method.POST, data);
+
 const onGetDataError = (element) => showAlert(element, MAP_DATA_LOADING_ERROR_MESSAGE, ERROR_MESSAGE_SHOW_TIME);
 
 export{
   getDataArray,
+  uploadData,
   onGetDataError
 };

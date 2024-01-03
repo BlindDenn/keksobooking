@@ -5,9 +5,14 @@ import{
 } from './constants.js';
 import{
   disableElements,
-  enableElements
+  enableElements,
+  isEscapeKey
 } from './utils.js';
-import{ validateForm } from './validation.js';
+import{
+  validateForm,
+  // resetValidation
+} from './validation.js';
+import { uploadData } from './api.js';
 
 const form = document.querySelector('.ad-form');
 const formFieldsets = form.querySelectorAll('fieldset');
@@ -15,6 +20,8 @@ const addressField = form.querySelector('#address');
 const typeSelector = form.querySelector('#type');
 const priceField = form.querySelector('#price');
 const priceSlider = form.querySelector('.ad-form__slider');
+const successModalTemplate = document.querySelector('#success').content.querySelector('.success');
+const errorModalTemplate = document.querySelector('#error').content.querySelector('.error');
 
 const setAddressFieldValue = ({lat, lng}) => {
   const fixedData = (val) => val.toFixed(LAT_LNG_PRECISSION);
@@ -70,8 +77,55 @@ const enableForm = () => {
 const initForm = () => {
   enableForm();
   setAddressFieldValue(START_LAT_LNG);
-  validateForm(form);
 };
+
+const showSuccessModal = () => {
+  const successModal = successModalTemplate.cloneNode(true);
+  document.body.append(successModal);
+
+  function onDocumentClick () {
+    successModal.remove();
+    document.removeEventListener('click', onDocumentClick);
+    document.removeEventListener('keydown', onDocumentKeydown);
+  }
+  function onDocumentKeydown (evt) {
+    if (isEscapeKey(evt)) {
+      successModal.remove();
+      document.removeEventListener('click', onDocumentClick);
+      document.removeEventListener('keydown', onDocumentKeydown);
+    }
+  }
+
+  document.addEventListener('click', onDocumentClick);
+  document.addEventListener('keydown', onDocumentKeydown);
+  form.reset();
+  setAddressFieldValue(START_LAT_LNG);
+};
+
+const showErrorModal = () => {
+  const errorModal = errorModalTemplate.cloneNode(true);
+  document.body.append(errorModal);
+};
+
+const uploadForm = async (data) => {
+  try {
+    await uploadData(data);
+    showSuccessModal();
+  } catch (err) {
+    showErrorModal();
+  }
+};
+
+const onUploadFormSubmit = (evt) => {
+  evt.preventDefault();
+  const isValid = validateForm();
+  if (isValid) {
+    const formData = new FormData(form);
+    uploadForm(formData);
+  }
+};
+
+form.addEventListener('submit', onUploadFormSubmit);
 
 export{
   disableForm,
