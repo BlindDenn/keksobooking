@@ -10,7 +10,7 @@ import{
 } from './utils.js';
 import{
   validateForm,
-  // resetValidation
+  resetValidation
 } from './validation.js';
 import { uploadData } from './api.js';
 import{ resetMapView } from './map.js';
@@ -24,6 +24,7 @@ const priceSlider = form.querySelector('.ad-form__slider');
 const successModalTemplate = document.querySelector('#success').content.querySelector('.success');
 const errorModalTemplate = document.querySelector('#error').content.querySelector('.error');
 const submitButton = form.querySelector('.ad-form__submit');
+const resetButton = form.querySelector('.ad-form__reset');
 const defaultPrice = PRICE_DEPENDECES[PRICE_DEPENDECES.defaultType];
 
 const setAddressFieldValue = ({lat, lng}) => {
@@ -84,26 +85,34 @@ const initForm = () => {
   setAddressFieldValue(START_LAT_LNG);
 };
 
-const showSuccessModal = () => {
-  const successModal = successModalTemplate.cloneNode(true);
-  document.body.append(successModal);
+const addCloseOnClickAndEsc = (element) => {
 
-  function onDocumentClick () {
-    successModal.remove();
+  function removeListeners () {
     document.removeEventListener('click', onDocumentClick);
     document.removeEventListener('keydown', onDocumentKeydown);
   }
 
+  function onDocumentClick () {
+    element.remove();
+    removeListeners();
+  }
+
   function onDocumentKeydown (evt) {
     if (isEscapeKey(evt)) {
-      successModal.remove();
-      document.removeEventListener('click', onDocumentClick);
-      document.removeEventListener('keydown', onDocumentKeydown);
+      element.remove();
     }
+    removeListeners();
   }
 
   document.addEventListener('click', onDocumentClick);
   document.addEventListener('keydown', onDocumentKeydown);
+};
+
+const showSuccessModal = () => {
+  const successModal = successModalTemplate.cloneNode(true);
+  document.body.append(successModal);
+
+  addCloseOnClickAndEsc(successModal);
   form.reset();
   resetMapView();
   submitButton.blur();
@@ -115,25 +124,11 @@ const showErrorModal = () => {
   document.body.append(errorModal);
   const errorButton = errorModal.querySelector('.error__button');
 
-  function onDocumentClick () {
-    errorModal.remove();
-    document.removeEventListener('click', onDocumentClick);
-    document.removeEventListener('keydown', onDocumentKeydown);
-  }
-
-  function onDocumentKeydown (evt) {
-    if (isEscapeKey(evt)) {
-      errorModal.remove();
-      document.removeEventListener('click', onDocumentClick);
-      document.removeEventListener('keydown', onDocumentKeydown);
-    }
-  }
-
   errorButton.addEventListener('click', () => {
     errorModal.remove();
   });
-  document.addEventListener('click', onDocumentClick);
-  document.addEventListener('keydown', onDocumentKeydown);
+  addCloseOnClickAndEsc(errorModal);
+  submitButton.blur();
 };
 
 const uploadForm = async (data) => {
@@ -142,6 +137,8 @@ const uploadForm = async (data) => {
     showSuccessModal();
   } catch (err) {
     showErrorModal();
+  } finally {
+    enableForm();
   }
 };
 
@@ -150,11 +147,20 @@ const onUploadFormSubmit = (evt) => {
   const isValid = validateForm();
   if (isValid) {
     const formData = new FormData(form);
+    disableForm();
     uploadForm(formData);
   }
 };
 
+const onFormReset = (evt) => {
+  evt.preventDefault();
+  form.reset();
+  resetValidation();
+  resetMapView();
+};
+
 form.addEventListener('submit', onUploadFormSubmit);
+resetButton.addEventListener('click', onFormReset);
 
 export{
   disableForm,

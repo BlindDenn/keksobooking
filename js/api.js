@@ -4,7 +4,7 @@ import { ERROR_MESSAGE_SHOW_TIME } from './constants.js';
 const BASE_URL = 'https://25.javascript.pages.academy/keksobooking';
 const Route = {
   GET_DATA : '/data',
-  SEND_DATA : '/_'
+  SEND_DATA : '/'
 };
 const Method = {
   GET : 'GET',

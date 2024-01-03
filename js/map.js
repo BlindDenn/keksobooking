@@ -93,6 +93,7 @@ const initMap = () => {
 const resetMapView = () => {
   map.setView(START_LAT_LNG, 13);
   mainMarker.setLatLng(START_LAT_LNG);
+  setAddressFieldValue(START_LAT_LNG);
 };
 
 export{
