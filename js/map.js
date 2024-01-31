@@ -59,6 +59,7 @@ const addOfferMarkers = async() => {
     const recievedDataArray = await getDataArray();
     recievedDataArray.forEach((el) => {
       setOfferMarker(el).addTo(markerGroup);
+      enableFilters();
     });
   } catch(err) {
     onGetDataError(mapContainer);
@@ -70,7 +71,6 @@ const map = L.map('map-canvas');
 const initMap = () => {
 
   map.on('load', () => {
-    enableFilters();
     initForm();
   })
     .setView(START_LAT_LNG, 13);

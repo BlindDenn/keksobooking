@@ -1,7 +1,7 @@
 import { showAlert } from './utils.js';
 import { ERROR_MESSAGE_SHOW_TIME } from './constants.js';
 
-const BASE_URL = 'https://25.javascript.pages.academy/keksobooking';
+const BASE_URL = 'https://25.javascript.htmlacademy.pro/keksobooking';
 const Route = {
   GET_DATA : '/data',
   SEND_DATA : '/'
