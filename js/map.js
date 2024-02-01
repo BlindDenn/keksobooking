@@ -1,7 +1,8 @@
 import{
   START_LAT_LNG,
   MAIN_PIN_ICON_HEIGHT,
-  PIN_ICON_HEIGHT
+  PIN_ICON_HEIGHT,
+  NUMBER_OFFERS_DISPLAYED_ON_MAP
 } from './constants.js';
 import{
   enableFilters
@@ -57,7 +58,8 @@ const setOfferMarker = (obj) => {
 const addOfferMarkers = async() => {
   try {
     const recievedDataArray = await getDataArray();
-    recievedDataArray.forEach((el) => {
+    const selectedDataArray = recievedDataArray.toSpliced(NUMBER_OFFERS_DISPLAYED_ON_MAP);
+    selectedDataArray.forEach((el) => {
       setOfferMarker(el).addTo(markerGroup);
       enableFilters();
     });
