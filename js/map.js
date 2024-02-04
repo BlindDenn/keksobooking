@@ -5,7 +5,8 @@ import{
   NUMBER_OFFERS_DISPLAYED_ON_MAP
 } from './constants.js';
 import{
-  enableFilters
+  enableFilters,
+  filterOffers,
 } from './filters.js';
 import{
   initForm,
@@ -58,7 +59,7 @@ const setOfferMarker = (obj) => {
 const addOfferMarkers = async() => {
   try {
     const recievedDataArray = await getDataArray();
-    const selectedDataArray = recievedDataArray.toSpliced(NUMBER_OFFERS_DISPLAYED_ON_MAP);
+    const selectedDataArray = filterOffers(recievedDataArray).toSpliced(NUMBER_OFFERS_DISPLAYED_ON_MAP);
     selectedDataArray.forEach((el) => {
       setOfferMarker(el).addTo(markerGroup);
       enableFilters();
