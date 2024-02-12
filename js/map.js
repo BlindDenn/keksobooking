@@ -2,7 +2,8 @@ import{
   START_LAT_LNG,
   MAIN_PIN_ICON_HEIGHT,
   PIN_ICON_HEIGHT,
-  NUMBER_OFFERS_DISPLAYED_ON_MAP
+  NUMBER_OFFERS_DISPLAYED_ON_MAP,
+  DEBOUNCER_TIMEOUT_MS
 } from './constants.js';
 import{
   enableFilters,
@@ -19,8 +20,10 @@ import{
 import {
   getOffer
 } from './offer.js';
+import{ debounce } from'./utils.js';
 
 const mapContainer = document.querySelector('#map-canvas');
+const mapFiltersForm = document.querySelector('.map__filters');
 
 const mainPinIcon = L.icon({
   iconUrl: '../img/main-pin.svg',
@@ -33,6 +36,8 @@ const pinIcon = L.icon({
   iconSize: [PIN_ICON_HEIGHT, PIN_ICON_HEIGHT],
   iconAnchor: [PIN_ICON_HEIGHT / 2, PIN_ICON_HEIGHT],
 });
+
+const map = L.map('map-canvas');
 
 const mainMarker = L.marker(
   START_LAT_LNG,
@@ -56,20 +61,33 @@ const setOfferMarker = (obj) => {
   return offerMarker;
 };
 
-const addOfferMarkers = async() => {
+const addOffersMarkers = (arr) => {
+  markerGroup.clearLayers();
+  arr.forEach((el) => {
+    setOfferMarker(el).addTo(markerGroup);
+  });
+  markerGroup.addTo(map);
+};
+
+const initOfferMarkers = async() => {
+  let rawDataArray;
+
+  const onMapFiltersFormsInput = (arr) => {
+    const filteredDataArray = filterOffers(arr);
+    addOffersMarkers(filteredDataArray.toSpliced(NUMBER_OFFERS_DISPLAYED_ON_MAP));
+  };
+
   try {
-    const recievedDataArray = await getDataArray();
-    const selectedDataArray = filterOffers(recievedDataArray).toSpliced(NUMBER_OFFERS_DISPLAYED_ON_MAP);
-    selectedDataArray.forEach((el) => {
-      setOfferMarker(el).addTo(markerGroup);
-      enableFilters();
-    });
+    rawDataArray = await getDataArray();
+    addOffersMarkers(rawDataArray.toSpliced(NUMBER_OFFERS_DISPLAYED_ON_MAP));
+    enableFilters();
   } catch(err) {
     onGetDataError(mapContainer);
   }
-};
 
-const map = L.map('map-canvas');
+  mapFiltersForm.addEventListener('input', debounce(() => onMapFiltersFormsInput(rawDataArray), DEBOUNCER_TIMEOUT_MS));
+
+};
 
 const initMap = () => {
 
@@ -87,10 +105,7 @@ const initMap = () => {
     .addTo(map)
     .on('drag', (evt) => setAddressFieldValue(evt.latlng));
 
-  markerGroup
-    .addTo(map);
-
-  addOfferMarkers();
+  initOfferMarkers();
 };
 
 const resetMapView = () => {

@@ -25,7 +25,8 @@ const setType = (item, sourceData) => {
 
 const setRoomsGuests = (item, sourceData) => {
   const [rooms, guests] = sourceData;
-  item.textContent = `${rooms} ${numWord(rooms, ['комната', 'комнаты', 'комнат'])} для ${guests} ${numWord(guests, ['гостя', 'гостей', 'гостей'])}`;
+  const setGuestsMessage = (number) => (number === 0 ? 'не для гостей' : `для ${number} ${numWord(number, ['гостя', 'гостей', 'гостей'])}`);
+  item.textContent = `${rooms} ${numWord(rooms, ['комната', 'комнаты', 'комнат'])} ${setGuestsMessage(guests)}`;
 };
 
 const setCheckinCheckout = (item, sourceData) => {
@@ -39,7 +40,7 @@ const getOffersFeatures = (item, sourceData) => {
   featureItems.forEach((listItem) => {
     const classUnicSubstring = listItem.classList[FEATURE_CLASS_MOD_SUBSTR_INDEX].slice(FEATURE_CLASS_MOD_SUBSTR.length);
     const isPresent = sourceData.some((element) => element === classUnicSubstring);
-    if(isPresent) {
+    if(!isPresent) {
       listItem.remove();
     }
   }
