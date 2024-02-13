@@ -1,7 +1,8 @@
 import{
   START_LAT_LNG,
   LAT_LNG_PRECISSION,
-  PRICE_DEPENDECES
+  PRICE_DEPENDECES,
+  ALLOWED_IMAGE_FILE_TYPES
 } from './constants.js';
 import{
   disableElements,
@@ -17,6 +18,10 @@ import{ resetMapView } from './map.js';
 
 const form = document.querySelector('.ad-form');
 const formFieldsets = form.querySelectorAll('fieldset');
+const avatarUploadField = form.querySelector('#avatar');
+const avatarPreview = form.querySelector('.ad-form-header__preview img');
+const adImageUploadField = form.querySelector('#images');
+const adImagesParent = form.querySelector('.ad-form__photo');
 const addressField = form.querySelector('#address');
 const typeSelector = form.querySelector('#type');
 const priceField = form.querySelector('#price');
@@ -155,12 +160,47 @@ const onUploadFormSubmit = (evt) => {
 const onFormReset = (evt) => {
   evt.preventDefault();
   form.reset();
+  if (avatarPreview.src !== 'img/muffin-grey.svg') {
+    avatarPreview.src = 'img/muffin-grey.svg';
+  }
+  if (adImagesParent.children.length) {
+    adImagesParent.children[0].remove();
+  }
   resetValidation();
   resetMapView();
 };
 
+const isImageFileValid = (testedFile) => ALLOWED_IMAGE_FILE_TYPES.some((it) => testedFile.name.toLowerCase().endsWith(it));
+
+const onAvatarUploadField = () => {
+  const file = avatarUploadField.files[0];
+  if (isImageFileValid(file)) {
+    avatarPreview.src = URL.createObjectURL(file);
+  }
+};
+
+const onAdImageUploadFieldInput = () => {
+
+  const adImage = document.createElement('img');
+  adImage.setAttribute('alt', 'Фотография жилья.');
+  adImage.setAttribute('width', '140');
+  adImage.setAttribute('height', '140');
+
+  const file = adImageUploadField.files[0];
+  const currentAdImage = adImagesParent.querySelector('img');
+  if (currentAdImage) {
+    currentAdImage.remove();
+  }
+  if (isImageFileValid(file)) {
+    adImage.src = URL.createObjectURL(file);
+    adImagesParent.appendChild(adImage);
+  }
+};
+
 form.addEventListener('submit', onUploadFormSubmit);
 resetButton.addEventListener('click', onFormReset);
+avatarUploadField.addEventListener('input', onAvatarUploadField);
+adImageUploadField.addEventListener('input', onAdImageUploadFieldInput);
 
 export{
   disableForm,
